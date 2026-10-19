@@ -632,6 +632,25 @@ const cases = [
     '',
     'row_label: show_tab = true no longer reads as both',
   ],
+
+  // lib/state.js, lib/frame.js — an authoritative idle settles a held blocked
+  // mark; a detector-derived one does not.
+  [
+    'lib/state.js',
+    '        screen_detection_skipped: a.screen_detection_skipped === true,\n',
+    '        screen_detection_skipped: false,\n',
+    'blocked: the snapshot drops screen_detection_skipped, so an authoritative idle reads as a detector blip',
+    true,
+    'test/blocked-authoritative-idle.test.js',
+  ],
+  [
+    'lib/frame.js',
+    "        (entry.screen_detection_skipped === true && status === 'idle')\n",
+    '        false\n',
+    'blocked: an authoritative idle no longer clears the hold, so an answered question stays red',
+    true,
+    'test/blocked-authoritative-idle.test.js',
+  ],
 ];
 
 function withEdit(file, from, to, label, expectCaught = true, via = 'check') {
